@@ -711,7 +711,7 @@ abstract contract WithLimitedSupply {
 
     /// @dev Get the max Supply
     /// @return the maximum token count
-    function totalSupply() public view virtual returns (uint256) {
+    function totalSupplyCheck() public view virtual returns (uint256) {
         return _totalSupply;
     }
 
@@ -724,7 +724,7 @@ abstract contract WithLimitedSupply {
     /// @dev Check whether tokens are still available
     /// @return the available token count
     function availableTokenCount() public view returns (uint256) {
-        return totalSupply() - tokenCount();
+        return totalSupplyCheck() - tokenCount();
     }
 
     /// @dev Increment the token count and fetch the latest count
@@ -757,7 +757,7 @@ abstract contract WithLimitedSupply {
         require(_supply > tokenCount(), "Can't set the supply to less than the current token count");
         _totalSupply = _supply;
 
-        emit SupplyChanged(totalSupply());
+        emit SupplyChanged(totalSupplyCheck());
     }
 }
 
@@ -788,7 +788,7 @@ abstract contract RandomlyAssigned is WithLimitedSupply {
     /// @dev Randomly gets a new token ID and keeps track of the ones that are still available.
     /// @return the next token ID
     function nextToken() internal override ensureAvailability returns (uint256) {
-        uint256 maxIndex = totalSupply() - tokenCount();
+        uint256 maxIndex = totalSupplyCheck() - tokenCount();
         uint256 random = uint256(keccak256(
             abi.encodePacked(
                 msg.sender,
@@ -856,14 +856,14 @@ contract VistroApp is ERC721, Ownable, ReentrancyGuard, RandomlyAssigned  {
   //mint details
   uint256 public cost = .5 ether;
   uint256 public whiteListCost = .5 ether;
-  uint256 public maxSupply = 30;
+  uint256 public maxSupply = 13000;
   uint256 public maxMintAmount = 5;
   uint256 public whiteListMintAmount=5;
   string public notRevealedUri;
 
   //track mints
   uint256 public startingMint=1;
-  uint256 public amountMinted;
+  uint256 public amountMinted=0;
   uint256 public WLaddressCount;
   uint256 public WLClaimed;
   uint256 public RemainingclaimAddresses;
@@ -882,7 +882,7 @@ contract VistroApp is ERC721, Ownable, ReentrancyGuard, RandomlyAssigned  {
   bool public collectionLock=false;
 
   //cap amounts
-  uint256 public capCount=21;
+  uint256 public capCount=2600;
   //cap stops
   bool public capHit = false; 
 
@@ -915,7 +915,7 @@ contract VistroApp is ERC721, Ownable, ReentrancyGuard, RandomlyAssigned  {
   // public minting fuction
   function mint(uint256 _mintAmount) public payable {
 
-    uint256 mintSupply = totalSupplyCheck();
+    uint256 mintSupply = totalSupply();
 
 if(capHit==false && (mintSupply+_mintAmount) >= capCount){
         publicActive=false;
@@ -940,7 +940,7 @@ if(capHit==false && (mintSupply+_mintAmount) >= capCount){
   
 function mintWhiteList(uint256 _mintAmount) public payable{
 
-      uint256 mintSupply = totalSupplyCheck();
+      uint256 mintSupply = totalSupply();
 
       if(capHit==false && (mintSupply+_mintAmount) >= capCount){
         whiteListActive=false;
@@ -971,7 +971,7 @@ function mintWhiteList(uint256 _mintAmount) public payable{
 
   //claimable list mint funtion
 function mintClaimList(uint256 numberOfTokens) external payable {
-    uint256 currentSupply = totalSupplyCheck();
+    uint256 currentSupply = totalSupply();
 
     require(claimListActive, "Claim list is not active");
     require(numberOfTokens <= _claimList[msg.sender], "Exceeded max available to purchase");
@@ -993,7 +993,7 @@ function mintClaimList(uint256 numberOfTokens) external payable {
  }
 
 //return total supply minted
- function totalSupplyCheck() public view returns (uint256) {
+ function totalSupply() public view returns (uint256) {
     return amountMinted;
   }
 

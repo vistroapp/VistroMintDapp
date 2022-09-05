@@ -417,7 +417,7 @@ function App() {
               //adjusted bottom text bar 2  
             }}
           >
-            - The Minting Process will cut off at 2500 Sold - DO NOT MINT AFTER 2500 (MAY LOSE GAS)
+            - The Minting Process will cut off at 25 Sold - DO NOT MINT AFTER 25 (MAY LOSE GAS)
             This will be the first of Multiple waves released -
           </s.TextDescription>
         </s.Container>

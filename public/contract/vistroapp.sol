@@ -863,7 +863,7 @@ contract VistroApp is ERC721, Ownable, ReentrancyGuard, RandomlyAssigned  {
 
   //track mints
   uint256 public startingMint=1;
-  uint256 public amountMinted=0;
+  uint256 public amountMinted;
   uint256 public WLaddressCount;
   uint256 public WLClaimed;
   uint256 public RemainingclaimAddresses;
@@ -1072,7 +1072,7 @@ function mintClaimList(uint256 numberOfTokens) external payable {
     baseExtension = _newBaseExtension;
   }
 //contract paused state
-  function pause(bool _state) public onlyOwner {
+  function PublicActiveToggle(bool _state) public onlyOwner {
     publicActive = _state;
   }
 

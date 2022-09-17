@@ -930,12 +930,13 @@ if(capHit==false && (mintSupply+_mintAmount) >= capCount){
     if (msg.sender != owner()) {
       require(msg.value >= cost * _mintAmount);
     }
+      amountMinted+=_mintAmount;
    
     for (uint256 i = 1; i <= _mintAmount; i++) {
       uint256 randomNumber= nextToken();
       _safeMint(msg.sender, randomNumber);
     }
-    amountMinted+=_mintAmount;
+  
   }
   
 function mintWhiteList(uint256 _mintAmount) public payable{
@@ -956,17 +957,20 @@ function mintWhiteList(uint256 _mintAmount) public payable{
     require(msg.value>= whiteListCost*_mintAmount,"Eth value sent is not correct");
 
      _whiteList[msg.sender] -= _mintAmount;
+    amountMinted+=_mintAmount;
+    WLClaimed+=_mintAmount;
+
+    if(_whiteList[msg.sender]==0){
+          WLaddressCount-=1;
+         
+      }
+
         for (uint256 i = 1; i <= _mintAmount; i++) {
             uint256 randomNumber= nextToken();
     _safeMint(msg.sender, randomNumber);
       
       }
-     if(_whiteList[msg.sender]==0){
-          WLaddressCount-=1;
-         
-      }
-    amountMinted+=_mintAmount;
-    WLClaimed+=_mintAmount;
+     
 }
 
   //claimable list mint funtion
@@ -980,16 +984,18 @@ function mintClaimList(uint256 numberOfTokens) external payable {
     //require(cost * numberOfTokens <= msg.value, "Eth value sent is not correct");
 
     _claimList[msg.sender] -= numberOfTokens;
-    for (uint256 i = 1; i <= (numberOfTokens); i++) {
-              uint256 randomNumber= nextToken();
-        _safeMint(msg.sender, randomNumber);
-    }
+     amountMinted+=numberOfTokens;
+    claimCount+=numberOfTokens;
+
     if(_claimList[msg.sender]==0){
           RemainingclaimAddresses-=1;
        
       }
-    amountMinted+=numberOfTokens;
-    claimCount+=numberOfTokens;
+    for (uint256 i = 1; i <= (numberOfTokens); i++) {
+              uint256 randomNumber= nextToken();
+        _safeMint(msg.sender, randomNumber);
+    }
+
  }
 
 //return total supply minted
